@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mediation – Kruger National Park Rules</title>
+<style>
+:root {
+  --dark: #1a1a2e; --card: #16213e; --accent: #0f3460;
+  --gold: #f0c040; --green: #27ae60; --dkgreen: #1e8449;
+  --blue: #2980b9; --red: #e74c3c; --orange: #e67e22;
+  --text: #eee; --muted: #888; --border: #1e2d4a;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: var(--dark); color: var(--text);
+  min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 0 0 60px;
+}
+
+/* ── TOP BAR ── */
+.top-bar {
+  width: 100%; background: var(--card); padding: 12px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  box-shadow: 0 2px 12px rgba(0,0,0,.4); position: sticky; top: 0; z-index: 100;
+}
+.top-bar h1 { font-size: .95em; color: var(--gold); }
+.top-bar a  { color: var(--muted); font-size: .82em; text-decoration: none; }
+.top-bar a:hover { color: var(--gold); }
+
+/* ── MAIN ── */
+.main { width: 100%; max-width: 900px; padding: 28px 16px; display: flex; flex-direction: column; gap: 24px; }
+
+/* ── SCENARIO BANNER ── */
+.scenario {
+  background: linear-gradient(135deg, #0d2137, #0f3460);
+  border: 1px solid #2a4a6a; border-radius: 18px; padding: 24px 28px;
+  display: flex; gap: 18px; align-items: flex-start;
+}
+.scenario-icon { font-size: 2.8em; flex-shrink: 0; margin-top: 2px; }
+.scenario-body { display: flex; flex-direction: column; gap: 8px; }
+.scenario-label {
+  font-size: .72em; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase;
+  color: #5dade2; margin-bottom: 2px;
+}
+.scenario h2 { font-size: 1.2em; color: var(--gold); line-height: 1.4; }
+.scenario p  { font-size: .9em; color: #ccc; line-height: 1.6; }
+.scenario .highlight { color: var(--gold); font-weight: bold; }
+
+/* ── TASK BOX ── */
+.task-box {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 20px 24px;
+}
+.task-box h3 { font-size: .8em; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 12px; }
+.task-steps { display: flex; flex-direction: column; gap: 8px; }
+.task-step { display: flex; gap: 12px; align-items: flex-start; font-size: .9em; line-height: 1.5; }
+.step-num {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--accent); color: var(--gold);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .75em; font-weight: bold; flex-shrink: 0; margin-top: 1px;
+}
+
+/* ── SUPPORT BOXES ── */
+.support-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media(max-width:600px){ .support-row { grid-template-columns: 1fr; } }
+
+.support-box {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 16px 18px;
+}
+.support-box h4 {
+  font-size: .75em; text-transform: uppercase; letter-spacing: 1px;
+  color: var(--muted); margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+}
+.support-box ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.support-box li { font-size: .85em; line-height: 1.45; color: #ccc; }
+.support-box li::before { content: '›'; color: var(--gold); margin-right: 6px; }
+.phrase-de { color: #f9e4a0; font-style: italic; }
+.tip-box { border-color: #2a4a2a; background: #0f1f0f; }
+.tip-box h4 { color: #58d68d; }
+.tip-box li::before { color: #58d68d; }
+
+/* ── SIGNS GRID ── */
+.signs-header {
+  font-size: .8em; text-transform: uppercase; letter-spacing: 1px;
+  color: var(--muted); margin-bottom: -8px;
+}
+
+.signs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 16px; }
+@media(max-width:500px){ .signs-grid { grid-template-columns: 1fr; } }
+
+.sign-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden; transition: border-color .2s;
+}
+.sign-card:focus-within { border-color: #3a5a8a; }
+
+/* Park sign header */
+.sign-header {
+  background: #1b3a1b; border-bottom: 3px solid #2d6a2d;
+  padding: 14px 16px; display: flex; gap: 14px; align-items: center;
+}
+.sign-icon { font-size: 2.2em; flex-shrink: 0; }
+.sign-english { flex: 1; }
+.sign-title { font-size: .95em; font-weight: bold; color: #a8e6a8; line-height: 1.3; }
+.sign-detail { font-size: .78em; color: #6aaa6a; margin-top: 3px; line-height: 1.4; }
+.sign-badge {
+  font-size: .65em; font-weight: bold; letter-spacing: .5px;
+  background: rgba(0,0,0,.3); color: #6aaa6a;
+  padding: 2px 7px; border-radius: 10px; border: 1px solid #2d5a2d;
+  white-space: nowrap; align-self: flex-start;
+}
+
+/* Mediation area */
+.sign-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.sign-body label { font-size: .75em; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; }
+textarea {
+  width: 100%; background: #0d1a2e; border: 1px solid #2a3a5a;
+  border-radius: 8px; color: var(--text); font-size: .88em;
+  font-family: inherit; padding: 10px 12px; resize: vertical; min-height: 72px;
+  transition: border-color .2s; line-height: 1.5;
+}
+textarea:focus { outline: none; border-color: var(--blue); }
+textarea::placeholder { color: #3a4a6a; }
+
+.sign-actions { display: flex; gap: 8px; align-items: center; }
+.btn-sm {
+  padding: 6px 14px; border: none; border-radius: 20px; cursor: pointer;
+  font-size: .78em; font-weight: bold; transition: all .18s;
+}
+.btn-hint   { background: rgba(240,192,64,.15); color: var(--gold);   border: 1px solid rgba(240,192,64,.3); }
+.btn-answer { background: rgba(39,174,96,.15);  color: #7dcea0;       border: 1px solid rgba(39,174,96,.3); }
+.btn-hint:hover   { background: rgba(240,192,64,.28); }
+.btn-answer:hover { background: rgba(39,174,96,.28); }
+
+.hint-text {
+  display: none; font-size: .82em; color: #aaa; background: #0d1a2e;
+  border: 1px solid #2a3a5a; border-radius: 8px; padding: 9px 12px; line-height: 1.5;
+}
+.hint-text.show { display: block; }
+.model-answer {
+  display: none; font-size: .85em; color: #a8e6a8; background: #0a1f0a;
+  border: 1px solid #2d5a2d; border-radius: 8px; padding: 10px 12px; line-height: 1.55;
+}
+.model-answer.show { display: block; }
+.model-label { font-size: .7em; text-transform: uppercase; color: #6aaa6a; letter-spacing: .8px; margin-bottom: 4px; }
+
+/* ── CHECKLIST ── */
+.checklist {
+  background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px 24px;
+}
+.checklist h3 { font-size: .8em; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 14px; }
+.check-items { display: flex; flex-direction: column; gap: 8px; }
+.check-item { display: flex; gap: 10px; align-items: center; font-size: .88em; cursor: pointer; }
+.check-item input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--green); flex-shrink: 0; cursor: pointer; }
+.check-item span { color: #ccc; line-height: 1.4; }
+.check-item:has(input:checked) span { color: var(--green); text-decoration: line-through; text-decoration-color: #555; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <h1>🌿 Mediation Task · Kruger National Park</h1>
+  <a href="exploring_the_wild.html">← Back to Exploring the Wild</a>
+</div>
+
+<div class="main">
+
+  <!-- SCENARIO -->
+  <div class="scenario">
+    <div class="scenario-icon">✉️</div>
+    <div class="scenario-body">
+      <div class="scenario-label">Situation · Mediation</div>
+      <h2>Your German cousins need your help!</h2>
+      <p>
+        Your cousins <span class="highlight">Lukas (13) and Emma (15)</span> are visiting you in South Africa for the first time.
+        Tomorrow you are all going to <span class="highlight">Kruger National Park</span> together.
+        Your cousins are excited – but they have never learned English and cannot read the signs at the park entrance.
+      </p>
+      <p style="margin-top:4px">
+        They ask you: <em style="color:#f9e4a0">"Was bedeuten die Schilder eigentlich alle? Und warum sind die Regeln so wichtig?"</em>
+      </p>
+      <p style="margin-top:4px">
+        <strong>Explain the most important rules to them in German.</strong>
+        Make sure your explanation is clear, age-appropriate and includes the reasons behind each rule.
+      </p>
+    </div>
+  </div>
+
+  <!-- TASK -->
+  <div class="task-box">
+    <h3>Your Task</h3>
+    <div class="task-steps">
+      <div class="task-step">
+        <div class="step-num">1</div>
+        <div>Read all <strong>8 park signs</strong> carefully and make sure you understand what they mean.</div>
+      </div>
+      <div class="task-step">
+        <div class="step-num">2</div>
+        <div>For each sign, write a short explanation <strong>in German</strong> for Lukas and Emma. Do <em>not</em> translate word for word – explain the rule and its reason in a natural, age-appropriate way.</div>
+      </div>
+      <div class="task-step">
+        <div class="step-num">3</div>
+        <div>Use the <strong>Redemittel</strong> and <strong>Wortschatzbox</strong> below to help you. Check the model answer only after you have written your own.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUPPORT -->
+  <div class="support-row">
+    <div class="support-box">
+      <h4>💬 Redemittel auf Deutsch</h4>
+      <ul>
+        <li><span class="phrase-de">Das Schild bedeutet, dass …</span></li>
+        <li><span class="phrase-de">Ihr dürft / müsst / sollt …</span></li>
+        <li><span class="phrase-de">Es ist verboten, … zu …</span></li>
+        <li><span class="phrase-de">Das ist wichtig, weil …</span></li>
+        <li><span class="phrase-de">Wenn man das nicht macht, …</span></li>
+        <li><span class="phrase-de">Das dient zum Schutz von …</span></li>
+        <li><span class="phrase-de">Passt auf, denn … kann gefährlich sein.</span></li>
+        <li><span class="phrase-de">Stellt euch vor: Wenn alle …, dann …</span></li>
+      </ul>
+    </div>
+    <div class="support-box tip-box">
+      <h4>✅ Mediation Tips</h4>
+      <ul>
+        <li>Don't translate every word – transfer the <em>meaning</em></li>
+        <li>Think about your audience: Lukas (13) and Emma (15) – use language they understand</li>
+        <li>Always give a <em>reason</em> (Begründung) for each rule</li>
+        <li>Adapt the tone: you're talking to family, not writing a formal letter</li>
+        <li>Use examples to make rules easier to understand</li>
+        <li>Check: Would Lukas and Emma understand your explanation?</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SIGNS -->
+  <div class="signs-header">Park Signs – Kruger National Park</div>
+  <div class="signs-grid">
+
+    <!-- 1 -->
+    <div class="sign-card">
+      <div class="sign-header">
+        <div class="sign-icon">🚗</div>
+        <div class="sign-english">
+          <div class="sign-title">DO NOT LEAVE YOUR VEHICLE</div>
+          <div class="sign-detail">You may only exit your car at designated rest camps and picnic areas. Animals can attack without warning.</div>
+        </div>
+        <div class="sign-badge">Rule 1</div>
+      </div>
+      <div class="sign-body">
+        <label>Deine Erklärung auf Deutsch:</label>
+        <textarea placeholder="Erkläre Lukas und Emma, was diese Regel bedeutet und warum sie so wichtig ist …"></textarea>
+        <div class="sign-actions">
+          <button class="btn-sm btn-hint"   onclick="toggle(this,'hint1')">💡 Hint</button>
+          <button class="btn-sm btn-answer" onclick="toggle(this,'ans1')">✓ Model answer</button>
+        </div>
+        <div class="hint-text" id="hint1">Think about what happens if tourists walk around freely – wild animals see them as prey. Why are rest camps safer?</div>
+        <div class="model-answer" id="ans1">
+          <div class="model-label">Mögliche Erklärung:</div>
+          Ihr dürft das Auto auf keinen Fall verlassen, solange ihr durch den Park fahrt – außer an den offiziellen Rastplätzen und Picknickbereichen. Das klingt streng, aber es ist wirklich wichtig: Tiere wie Löwen oder Büffel können blitzschnell angreifen, ohne Vorwarnung. Außerhalb des Autos seid ihr für die Tiere sichtbar und schutzlos. Die Ranger nehmen diese Regel sehr ernst – Verstöße können sogar zu Geldstrafen führen.
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="sign-card">
+      <div class="sign-header">
+        <div class="sign-icon">🚮</div>
+        <div class="sign-english">
+          <div class="sign-title">NO LITTERING</div>
+          <div class="sign-detail">Dispose of all waste in the bins provided. Litter harms wildlife and pollutes the natural environment.</div>
+        </div>
+        <div class="sign-badge">Rule 2</div>
+      </div>
+      <div class="sign-body">
+        <label>Deine Erklärung auf Deutsch:</label>
+        <textarea placeholder="Erkläre Lukas und Emma, was diese Regel bedeutet und warum sie so wichtig ist …"></textarea>
+        <div class="sign-actions">
+          <button class="btn-sm btn-hint"   onclick="toggle(this,'hint2')">💡 Hint</button>
+          <button class="btn-sm btn-answer" onclick="toggle(this,'ans2')">✓ Model answer</button>
+        </div>
+        <div class="hint-text" id="hint2">What happens when animals eat plastic or rubbish? Think about plastic bags and bottles in nature.</div>
+        <div class="model-answer" id="ans2">
+          <div class="model-label">Mögliche Erklärung:</div>
+          Bitte werft euren Müll immer nur in die bereitgestellten Mülleimer. Kein Einwickelpapier, keine Plastikflaschen einfach so aus dem Fenster werfen! Tiere wie Affen oder Antilopen fressen nämlich Müll, der auf dem Boden liegt – das kann sie sehr krank machen oder sogar töten. Außerdem verschmutzt Müll den Nationalpark und stört das natürliche Gleichgewicht. Stellt euch vor, wenn alle Besucher ihren Müll einfach wegwerfen würden – der Park würde wie eine Mülldeponie aussehen.
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="sign-card">
+      <div class="sign-header">
+        <div class="sign-icon">🚦</div>
+        <div class="sign-english">
+          <div class="sign-title">SPEED LIMIT: 50 km/h (tar) · 40 km/h (gravel)</div>
+          <div class="sign-detail">Drive slowly at all times. Speeding kills animals and endangers other visitors on the road.</div>
+        </div>
+        <div class="sign-badge">Rule 3</div>
+      </div>
+      <div class="sign-body">
+        <label>Deine Erklärung auf Deutsch:</label>
+        <textarea placeholder="Erkläre Lukas und Emma, was diese Regel bedeutet und warum sie so wichtig ist …"></textarea>
+        <div class="sign-actions">
+          <button class="btn-sm btn-hint"   onclick="toggle(this,'hint3')">💡 Hint</button>
+          <button class="btn-sm btn-answer" onclick="toggle(this,'ans3')">✓ Model answer</button>
+        </div>
+        <div class="hint-text" id="hint3">Animals cross the road unexpectedly. What's the difference between tar and gravel roads? Why is gravel more dangerous?</div>
+        <div class="model-answer" id="ans3">
+          <div class="model-label">Mögliche Erklärung:</div>
+          Auf asphaltierten Straßen dürfen wir maximal 50 Stundenkilometer fahren, auf Schotterwegen sogar nur 40. Das ist viel langsamer als in Deutschland – aber es gibt einen guten Grund: Tiere laufen ständig über die Straßen und erscheinen oft plötzlich hinter Büschen. Wenn man zu schnell fährt, kann man nicht mehr rechtzeitig bremsen. Auf Schotterwegen ist es noch gefährlicher, weil das Auto leichter ins Schleudern gerät. Außerdem: Wenn ihr langsam fahrt, könnt ihr viel mehr Tiere beobachten – das ist doch das Beste am Nationalpark!
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 -->
+    <div class="sign-card">
+      <div class="sign-header">
+        <div class="sign-icon">🦁</div>
+        <div class="sign-english">
+          <div class="sign-title">DO NOT FEED THE ANIMALS</div>
+          <div class="sign-detail">Feeding wildlife is illegal and dangerous. Animals that receive food from humans may become aggressive and have to be put down.</div>
+        </div>
+        <div class="sign-badge">Rule 4</div>
+      </div>
+      <div class="sign-body">
+        <label>Deine Erklärung auf Deutsch:</label>
+        <textarea placeholder="Erkläre Lukas und Emma, was diese Regel bedeutet und warum sie so wichtig ist …"></textarea>
+        <div class="sign-actions">
+          <button class="btn-sm btn-hint"   onclick="toggle(this,'hint4')">💡 Hint</button>
+          <button class="btn-sm btn-answer" onclick="toggle(this,'ans4')">✓ Model answer</button>
+        </div>
+        <div class="hint-text" id="hint4">What happens when animals get used to humans giving them food? Think about the long-term consequences for the animal.</div>
+        <div class="model-answer" id="ans4">
+          <div class="model-label">Mögliche Erklärung:</div>
+          Auch wenn es verlockend ist – bitte füttert die Tiere auf keinen Fall! Das ist sogar gesetzlich verboten. Wenn Tiere lernen, dass Menschen ihnen Essen geben, verlieren sie ihre natürliche Scheu vor Menschen und fangen an, aggressiv nach Futter zu suchen. Das ist nicht nur gefährlich für euch, sondern auch für das Tier selbst: Ranger müssen solche Tiere manchmal einschläfern, weil sie für Menschen zur Gefahr werden. Tiere sollen wild bleiben – das ist ihr natürliches Leben.
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="sign-card">
+      <div class="sign-header">
+        <div class="sign-icon">🌅</div>
+        <div class="sign-english">
+          <div class="sign-title">PARK GATES CLOSE AT SUNSET</div>
+          <div class="sign-detail">All visitors must reach their camp before the gates close. Driving after dark is extremely dangerous. Late arrivals face heavy fines.</div>
+        </div>
+        <div class="sign-badge">Rule 5</div>
+      </div>
+      <div class="sign-body">
+        <label>Deine Erklärung auf Deutsch:</label>
+        <textarea placeholder="Erkläre Lukas und Emma, was diese Regel bedeutet und warum sie so wichtig ist …"></textarea>
+        <div class="sign-actions">
+          <button class="btn-sm btn-hint"   onclick="toggle(this,'hint5')">💡 Hint</button>
+          <button class="btn-sm btn-answer" onclick="toggle(this,'ans5')">✓ Model answer</button>
+        </div>
+        <div class="hint-text" id="hint5">Why is driving at night so dangerous in a national park? What are nocturnal animals? What happens if you're late?</div>
+        <div class="model-answer" id="ans5">
+          <div class="model-label">Mögliche Erklärung:</div>
+          Die Parktore schließen bei Sonnenuntergang – und das müssen wir wirklich ernst nehmen! Nachts wird es im Park stockdunkel, und viele Tiere sind dann besonders aktiv: Leoparden, Hyänen und andere Nachttiere laufen über die Straßen. Ohne Licht könnte man sie kaum sehen. Wer zu spät am Camp ankommt, zahlt hohe Strafen. Also: Wir müssen unsere Tour so planen, dass wir rechtzeitig zurück sind – lieber etwas früher aufbrechen!
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 -->
+    <div class="sign-card">
+      <div class="sign-header">
+        <div class="sign-icon">🔥</div>
+        <div class="sign-english">
+          <div class="sign-title">NO OPEN FIRES OUTSIDE DESIGNATED AREAS</div>
+          <div class="sign-detail">Open fires are only permitted at official braai facilities. Wildfires destroy habitat and endanger animals and visitors.</div>
+        </div>
+        <div class="sign-badge">Rule 6</div>
+      </div>
+      <div class="sign-body">
+        <label>Deine Erklärung auf Deutsch:</label>
+        <textarea placeholder="Erkläre Lukas und Emma, was diese Regel bedeutet und warum sie so wichtig ist …"></textarea>
+        <div class="sign-actions">
+          <button class="btn-sm btn-hint"   onclick="toggle(this,'hint6')">💡 Hint</button>
+          <button class="btn-sm btn-answer" onclick="toggle(this,'ans6')">✓ Model answer</button>
+        </div>
+        <div class="hint-text" id="hint6">South Africa is very dry and hot. What could happen if a small fire gets out of control? What is a "braai"?</div>
+        <div class="model-answer" id="ans6">
+          <div class="model-label">Mögliche Erklärung:</div>
+          Offene Feuer sind im Park verboten – außer an den offiziellen Grillplätzen, die "Braai-Stationen" heißen. Braai ist übrigens das südafrikanische Wort fürs Grillen, das macht man hier sehr gerne! Der Grund für das Verbot ist ernst: Südafrika ist heiß und trocken, und ein kleines Feuer kann sich blitzschnell zu einem riesigen Waldbrand ausbreiten. Das zerstört den Lebensraum der Tiere und ist lebensgefährlich für alle im Park.
+        </div>
+      </div>
+    </div>
+
+    <!-- 7 -->
+    <div class="sign-card">
+      <div class="sign-header">
+        <div class="sign-icon">🐕</div>
+        <div class="sign-english">
+          <div class="sign-title">NO PETS ALLOWED</div>
+          <div class="sign-detail">Pets are not permitted anywhere in the national park. The scent of domestic animals stresses wildlife and may trigger attacks.</div>
+        </div>
+        <div class="sign-badge">Rule 7</div>
+      </div>
+      <div class="sign-body">
+        <label>Deine Erklärung auf Deutsch:</label>
+        <textarea placeholder="Erkläre Lukas und Emma, was diese Regel bedeutet und warum sie so wichtig ist …"></textarea>
+        <div class="sign-actions">
+          <button class="btn-sm btn-hint"   onclick="toggle(this,'hint7')">💡 Hint</button>
+          <button class="btn-sm btn-answer" onclick="toggle(this,'ans7')">✓ Model answer</button>
+        </div>
+        <div class="hint-text" id="hint7">Wild animals have a very strong sense of smell. What could happen if a lion smells a dog? Think from the perspective of both the pet and the wild animal.</div>
+        <div class="model-answer" id="ans7">
+          <div class="model-label">Mögliche Erklärung:</div>
+          Haustiere dürfen leider nicht mit in den Nationalpark – also falls ihr an Hunde oder Katzen gedacht habt, die müssen zuhause bleiben. Wildtiere wie Löwen oder Leoparden haben einen extrem feinen Geruchssinn. Der Geruch eines Hundes kann sie stressen oder sogar aggressiv machen – und dann wird das Haustier zur leichten Beute. Außerdem könnten Haustiere auch selbst in Panik geraten. Für alle Beteiligten ist es also sicherer, Haustiere zuhause zu lassen.
+        </div>
+      </div>
+    </div>
+
+    <!-- 8 -->
+    <div class="sign-card">
+      <div class="sign-header">
+        <div class="sign-icon">🤫</div>
+        <div class="sign-english">
+          <div class="sign-title">KEEP NOISE TO A MINIMUM</div>
+          <div class="sign-detail">Loud noise disturbs wildlife and reduces your chances of a sighting. Please speak quietly and switch your phone to silent mode.</div>
+        </div>
+        <div class="sign-badge">Rule 8</div>
+      </div>
+      <div class="sign-body">
+        <label>Deine Erklärung auf Deutsch:</label>
+        <textarea placeholder="Erkläre Lukas und Emma, was diese Regel bedeutet und warum sie so wichtig ist …"></textarea>
+        <div class="sign-actions">
+          <button class="btn-sm btn-hint"   onclick="toggle(this,'hint8')">💡 Hint</button>
+          <button class="btn-sm btn-answer" onclick="toggle(this,'ans8')">✓ Model answer</button>
+        </div>
+        <div class="hint-text" id="hint8">Why do animals react to noise? Think about what you want from a safari – what happens if animals hear you coming from far away?</div>
+        <div class="model-answer" id="ans8">
+          <div class="model-label">Mögliche Erklärung:</div>
+          Bitte seid so leise wie möglich, wenn wir durch den Park fahren – Handys auf stumm schalten und nicht laut reden oder Musik hören. Tiere reagieren sehr empfindlich auf Lärm: Wenn sie uns schon von weitem hören, verstecken sie sich. Das wäre schade, denn dann sehen wir sie gar nicht! Außerdem stresst Lärm die Tiere in ihrer natürlichen Umgebung. Je ruhiger wir sind, desto mehr Tiere werden wir entdecken – das verspreche ich euch!
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SELF-CHECK CHECKLIST -->
+  <div class="checklist">
+    <h3>✅ Self-Check – Hast du alles beachtet?</h3>
+    <div class="check-items">
+      <label class="check-item">
+        <input type="checkbox">
+        <span>Ich habe alle 8 Schilder erklärt.</span>
+      </label>
+      <label class="check-item">
+        <input type="checkbox">
+        <span>Ich habe <strong>nicht</strong> Wort für Wort übersetzt, sondern den Sinn übertragen.</span>
+      </label>
+      <label class="check-item">
+        <input type="checkbox">
+        <span>Meine Sprache ist für Lukas (13) und Emma (15) verständlich und altersgerecht.</span>
+      </label>
+      <label class="check-item">
+        <input type="checkbox">
+        <span>Ich habe bei jeder Regel eine <strong>Begründung</strong> genannt (Warum ist diese Regel wichtig?).</span>
+      </label>
+      <label class="check-item">
+        <input type="checkbox">
+        <span>Ich habe die Redemittel benutzt, um meine Erklärungen abwechslungsreich zu gestalten.</span>
+      </label>
+      <label class="check-item">
+        <input type="checkbox">
+        <span>Meine Erklärungen klingen natürlich – so, wie ich wirklich mit meinen Cousins sprechen würde.</span>
+      </label>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function toggle(btn, id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('show');
+  if (el.classList.contains('show')) {
+    btn.style.opacity = '.5';
+  } else {
+    btn.style.opacity = '1';
+  }
+}
+</script>
+</body>
+</html>

@@ -264,8 +264,8 @@ body {
     <div class="step-pip active" onclick="goTo(0)" title="Pre-Reading Quiz">1</div>
     <div class="step-pip"        onclick="goTo(1)" title="Interactive Reader">2</div>
     <div class="step-pip"        onclick="goTo(2)" title="Comprehension Quiz">3</div>
-    <div class="step-pip"        onclick="goTo(3)" title="Mind Map">4</div>
-    <div class="step-pip"        onclick="goTo(4)" title="Vocabulary">5</div>
+    <div class="step-pip"        onclick="goTo(3)" title="Vocabulary">4</div>
+    <div class="step-pip"        onclick="goTo(4)" title="Mind Map">5</div>
   </div>
   <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
 </div>
@@ -559,14 +559,14 @@ body {
 
   <div class="comp-score" id="compScore"></div>
   <div class="btn-row">
-    <button class="btn btn-gold" onclick="nextStage()">Next: Mind Map →</button>
+    <button class="btn btn-gold" onclick="nextStage()">Next: Vocabulary →</button>
   </div>
 </div>
 
-<!-- ══ STAGE 4: MIND MAP ══ -->
-<div class="stage" id="stage3">
+<!-- ══ STAGE 5: MIND MAP ══ -->
+<div class="stage" id="stage4">
   <div class="stage-header">
-    <div class="stage-badge">Step 4 of 5 · Mind Map</div>
+    <div class="stage-badge">Step 5 of 5 · Mind Map</div>
     <h2>Complete the Mind Map</h2>
     <p>Drag each label into the correct category.</p>
   </div>
@@ -619,14 +619,14 @@ body {
   <div class="btn-row">
     <button class="btn btn-green" onclick="mmCheck()">✓ Check Mind Map</button>
     <button class="btn btn-ghost" onclick="mmReset()">↺ Reset</button>
-    <button class="btn btn-gold" onclick="nextStage()" id="mmNextBtn" style="display:none">Next: Vocabulary →</button>
+    <button class="btn btn-gold" onclick="showCompletion()" id="mmNextBtn" style="display:none">🏆 Finish!</button>
   </div>
 </div>
 
-<!-- ══ STAGE 5: VOCABULARY ══ -->
-<div class="stage" id="stage4">
+<!-- ══ STAGE 4: VOCABULARY ══ -->
+<div class="stage" id="stage3">
   <div class="stage-header">
-    <div class="stage-badge">Step 5 of 5 · Vocabulary</div>
+    <div class="stage-badge">Step 4 of 5 · Vocabulary</div>
     <h2>Key Words</h2>
     <p>Click a card to reveal the definition and an example sentence.</p>
   </div>
@@ -786,7 +786,7 @@ body {
   </div>
 
   <div class="btn-row" style="margin-top:10px">
-    <button class="btn btn-gold" onclick="showCompletion()">🏆 Finish!</button>
+    <button class="btn btn-gold" onclick="nextStage()">Next: Mind Map →</button>
   </div>
 </div>
 

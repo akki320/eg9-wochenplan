@@ -1025,6 +1025,53 @@ function mmReset() {
   save({mmPlacements: []});
 }
 
+/* ── TOUCH DRAG & DROP (iOS/iPadOS fallback) ── */
+let touchChip = null, touchClone = null;
+
+function mmTouchStart(e, chip) {
+  if (chip.classList.contains('placed')) return;
+  touchChip = chip;
+  chip.classList.add('dragging');
+  touchClone = document.createElement('div');
+  touchClone.className = 'chip';
+  touchClone.textContent = chip.dataset.word;
+  touchClone.style.cssText = 'position:fixed;z-index:9999;opacity:.85;pointer-events:none;transform:scale(1.08)';
+  document.body.appendChild(touchClone);
+  _moveTouchClone(e.touches[0]);
+  e.preventDefault();
+}
+function mmTouchMove(e) {
+  if (!touchChip) return;
+  e.preventDefault();
+  const t = e.touches[0];
+  _moveTouchClone(t);
+  document.querySelectorAll('.mm-branch').forEach(b => b.classList.remove('drag-over'));
+  const el = document.elementFromPoint(t.clientX, t.clientY);
+  el?.closest('.mm-branch')?.classList.add('drag-over');
+}
+function mmTouchEnd(e) {
+  if (!touchChip) return;
+  const t = e.changedTouches[0];
+  const el = document.elementFromPoint(t.clientX, t.clientY);
+  const branch = el?.closest('.mm-branch');
+  document.querySelectorAll('.mm-branch').forEach(b => b.classList.remove('drag-over'));
+  touchClone?.remove(); touchClone = null;
+  if (branch) {
+    _placeChip(touchChip.dataset.word, touchChip.dataset.branch, branch.dataset.branch);
+    touchChip.classList.add('placed');
+    saveMM();
+  }
+  touchChip.classList.remove('dragging');
+  touchChip = null;
+}
+function _moveTouchClone(t) {
+  if (!touchClone) return;
+  touchClone.style.left = (t.clientX - touchClone.offsetWidth / 2) + 'px';
+  touchClone.style.top  = (t.clientY - 24) + 'px';
+}
+document.addEventListener('touchmove', mmTouchMove, {passive: false});
+document.addEventListener('touchend', mmTouchEnd);
+
 /* ── VOCAB CARD FLIP ── */
 function flipCard(card) {
   card.classList.toggle('flipped');
@@ -1084,6 +1131,11 @@ function flipCard(card) {
 
   // Stage (last, so UI is ready)
   if (s.stage) goTo(s.stage);
+
+  // Wire touch drag to chips (iOS/iPadOS)
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('touchstart', e => mmTouchStart(e, chip), {passive: false});
+  });
 })();
 </script>
 </body>

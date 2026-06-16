@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flash & Freeze – Unit 3 Vocabulary</title>
+<style>
+:root {
+  --dark: #080812;
+  --card: #0e0e1c;
+  --gold: #f0c040;
+  --blue: #2980b9;
+  --green: #27ae60;
+  --red: #e74c3c;
+  --text: #eee;
+  --muted: #555;
+  --bar: #0b0b18;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: var(--dark);
+  color: var(--text);
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  user-select: none;
+  transition: background .5s;
+}
+body.state-flash  { background: #080c18; }
+body.state-freeze { background: #0a080f; }
+body.state-reveal { background: #06110a; }
+
+/* ── TOP BAR ── */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 28px;
+  background: var(--bar);
+  border-bottom: 1px solid #13132a;
+  flex-shrink: 0;
+  gap: 20px;
+}
+.top-title { font-size: .78em; letter-spacing: 2px; text-transform: uppercase; color: #333; }
+.progress-wrap { display: flex; align-items: center; gap: 10px; flex: 1; max-width: 300px; }
+.progress-track { flex: 1; height: 5px; background: #15152a; border-radius: 3px; }
+.progress-fill  { height: 5px; background: var(--gold); border-radius: 3px; transition: width .4s; width: 0%; }
+.progress-label { font-size: .78em; color: var(--muted); white-space: nowrap; }
+
+.top-settings { display: flex; align-items: center; gap: 8px; }
+.tag-group { display: flex; gap: 4px; }
+.tag {
+  font-size: .73em; padding: 4px 11px; border-radius: 20px; cursor: pointer;
+  border: 1px solid #1e1e38; color: var(--muted); background: #0f0f22;
+  transition: all .18s; white-space: nowrap;
+}
+.tag.active { background: var(--gold); color: #111; border-color: var(--gold); }
+.tag-label { font-size: .73em; color: #333; margin-right: 2px; }
+
+/* ── MAIN STAGE ── */
+.stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── SCREENS ── */
+.screen { display: none; flex-direction: column; align-items: center; gap: 0; width: 100%; }
+.screen.active { display: flex; }
+
+/* ── START SCREEN ── */
+#startScreen { gap: 28px; padding: 40px 24px; text-align: center; }
+#startScreen .icon { font-size: 5em; line-height: 1; }
+#startScreen h1 { font-size: 3em; color: var(--gold); letter-spacing: -1px; }
+#startScreen .sub { font-size: 1.1em; color: var(--muted); }
+.settings-panel {
+  display: flex; flex-direction: column; gap: 14px;
+  background: #0e0e22; border: 1px solid #1a1a38; border-radius: 16px;
+  padding: 20px 28px;
+}
+.setting-row { display: flex; align-items: center; gap: 12px; }
+.setting-row .lbl { font-size: .85em; color: var(--muted); width: 100px; text-align: right; }
+
+/* ── GAME SCREEN ── */
+#gameScreen { justify-content: center; }
+
+/* FLASH PHASE */
+#phaseFlash { display: none; flex-direction: column; align-items: center; gap: 16px; text-align: center; padding: 0 40px; width: 100%; }
+.en-word {
+  font-size: clamp(2.8em, 7vw, 5.5em);
+  font-weight: 800;
+  color: var(--gold);
+  line-height: 1.05;
+  animation: slideUp .3s ease;
+  letter-spacing: -1px;
+}
+.pron-word {
+  font-size: clamp(1em, 2.5vw, 1.5em);
+  color: #6a9ac0;
+  font-style: italic;
+  animation: slideUp .35s ease;
+}
+/* SVG timer ring */
+.timer-wrap {
+  position: relative; width: 100px; height: 100px; margin-top: 10px;
+}
+.timer-wrap svg { display: block; }
+.timer-num {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8em; font-weight: bold; color: var(--gold);
+}
+
+/* FREEZE PHASE */
+#phaseFreeze { display: none; flex-direction: column; align-items: center; gap: 20px; text-align: center; }
+.freeze-icon { font-size: 5em; animation: pulse 1.8s ease-in-out infinite; }
+.freeze-prompt { font-size: clamp(1.6em, 4vw, 2.6em); color: #444; letter-spacing: 1px; }
+
+/* REVEAL PHASE */
+#phaseReveal { display: none; flex-direction: column; align-items: center; gap: 16px; text-align: center; padding: 0 40px; width: 100%; }
+.reveal-en {
+  font-size: clamp(.9em, 2vw, 1.1em); color: #666;
+  animation: fadeIn .3s ease;
+}
+.de-word {
+  font-size: clamp(2.5em, 6.5vw, 5em);
+  font-weight: 800;
+  color: var(--green);
+  line-height: 1.1;
+  animation: slideUp .35s ease;
+}
+.ex-sentence {
+  font-size: clamp(.95em, 2.2vw, 1.35em);
+  color: #555;
+  font-style: italic;
+  max-width: 640px;
+  animation: fadeIn .5s ease;
+}
+.ex-sentence em { color: #888; font-style: normal; }
+
+/* ── DONE SCREEN ── */
+#doneScreen { gap: 24px; padding: 40px 24px; text-align: center; }
+#doneScreen .icon { font-size: 5em; }
+#doneScreen h2 { font-size: 2.8em; color: var(--gold); }
+#doneScreen p { font-size: 1.1em; color: var(--muted); }
+
+/* ── CONTROLS ── */
+.controls {
+  padding: 16px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: var(--bar);
+  border-top: 1px solid #13132a;
+  flex-shrink: 0;
+}
+.btn {
+  padding: 13px 30px; border: none; border-radius: 30px;
+  font-size: .95em; font-weight: 700; cursor: pointer;
+  transition: all .18s; letter-spacing: .3px; line-height: 1;
+}
+.btn:hover  { opacity: .88; transform: translateY(-1px); }
+.btn:active { transform: scale(.96); }
+.btn-gold   { background: var(--gold); color: #111; }
+.btn-blue   { background: var(--blue); color: #fff; }
+.btn-green  { background: var(--green); color: #fff; }
+.btn-ghost  { background: transparent; color: #444; border: 2px solid #222; }
+.btn-ghost:hover { border-color: #555; color: #666; }
+.shortcut {
+  font-size: .72em; color: #2a2a3a; margin-left: 6px;
+  font-weight: normal; letter-spacing: 0;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; } to { opacity: 1; }
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: .7; }
+  50%       { transform: scale(1.06); opacity: 1; }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .top-settings .tag-label { display: none; }
+  .top-title { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <span class="top-title">⚡ Flash &amp; Freeze</span>
+
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-label" id="progressLabel">0 / 19</div>
+  </div>
+
+  <div class="top-settings">
+    <span class="tag-label">⏱</span>
+    <div class="tag-group" id="timerGroup">
+      <div class="tag" data-sec="2" onclick="setTimer(2)">2 s</div>
+      <div class="tag active" data-sec="3" onclick="setTimer(3)">3 s</div>
+      <div class="tag" data-sec="5" onclick="setTimer(5)">5 s</div>
+    </div>
+    <span class="tag-label" style="margin-left:8px">🔀</span>
+    <div class="tag" id="shuffleTag" onclick="toggleShuffle()">Mischen</div>
+  </div>
+</div>
+
+<!-- STAGE -->
+<div class="stage">
+
+  <!-- START SCREEN -->
+  <div class="screen active" id="startScreen">
+    <div class="icon">⚡</div>
+    <h1>Flash &amp; Freeze</h1>
+    <p class="sub">Unit 3 · 19 Vokabeln</p>
+    <div class="settings-panel">
+      <div class="setting-row">
+        <span class="lbl">Flash-Zeit</span>
+        <div class="tag-group" id="timerGroup2">
+          <div class="tag" data-sec="2" onclick="setTimer(2)">2 s</div>
+          <div class="tag active" data-sec="3" onclick="setTimer(3)">3 s</div>
+          <div class="tag" data-sec="5" onclick="setTimer(5)">5 s</div>
+        </div>
+      </div>
+      <div class="setting-row">
+        <span class="lbl">Reihenfolge</span>
+        <div class="tag-group">
+          <div class="tag active" id="orderFixed" onclick="setShuffle(false)">Original</div>
+          <div class="tag" id="orderShuffle" onclick="setShuffle(true)">Zufall</div>
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-gold" style="font-size:1.2em;padding:16px 48px" onclick="startGame()">▶ Starten</button>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div class="screen" id="gameScreen">
+
+    <!-- FLASH -->
+    <div id="phaseFlash">
+      <div class="en-word" id="flashWord"></div>
+      <div class="pron-word" id="flashPron"></div>
+      <div class="timer-wrap">
+        <svg width="100" height="100" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#13132a" stroke-width="7"/>
+          <circle id="timerRing" cx="50" cy="50" r="40" fill="none"
+            stroke="#f0c040" stroke-width="7" stroke-linecap="round"
+            stroke-dasharray="251.3" stroke-dashoffset="0"
+            transform="rotate(-90 50 50)"/>
+        </svg>
+        <div class="timer-num" id="timerNum">3</div>
+      </div>
+    </div>
+
+    <!-- FREEZE -->
+    <div id="phaseFreeze">
+      <div class="freeze-icon">✏️</div>
+      <div class="freeze-prompt">Was bedeutet das?</div>
+    </div>
+
+    <!-- REVEAL -->
+    <div id="phaseReveal">
+      <div class="reveal-en" id="revealEn"></div>
+      <div class="de-word" id="revealDe"></div>
+      <div class="ex-sentence" id="revealEx"></div>
+    </div>
+
+  </div>
+
+  <!-- DONE SCREEN -->
+  <div class="screen" id="doneScreen">
+    <div class="icon">🏆</div>
+    <h2>Geschafft!</h2>
+    <p>Alle 19 Vokabeln durch.</p>
+  </div>
+
+</div>
+
+<!-- CONTROLS -->
+<div class="controls" id="controls">
+  <!-- filled by JS -->
+</div>
+
+<script>
+const VOCAB = [
+  { en: 'to teach',        pron: '[tiːtʃ], taught [tɔːt]',         de: 'beibringen · unterrichten · lehren', ex: 'to teach → teacher' },
+  { en: 'to name',         pron: '[neɪm]',                          de: 'nennen',                             ex: 'The park was named after a president.' },
+  { en: 'tourism',         pron: '[ˈtʊərɪzm]',                     de: 'Tourismus',                          ex: 'tourism → tourist' },
+  { en: 'to open',         pron: '[ˈəʊpn]',                        de: 'eröffnen',                           ex: 'The park was opened in 1927.' },
+  { en: 'to hire',         pron: '[haɪə]',                         de: 'einstellen · anheuern · mieten',     ex: 'If you hire sb, you give them a job.' },
+  { en: 'to reduce',       pron: '[rɪˈdjuːs]',                     de: 'reduzieren · vermindern · verringern', ex: '⇔ Achte auf die Aussprache!' },
+  { en: 'leopard',         pron: '[ˈlepəd]',                       de: 'Leopard · Leopardin',                ex: 'Leopards are big, wild cats.' },
+  { en: 'to treat',        pron: '[triːt]',                        de: 'behandeln',                          ex: 'to treat → treatment' },
+  { en: 'to recycle',      pron: '[ˌriːˈsaɪkl]',                  de: 'recyceln · wiederverwerten',         ex: 'We can recycle the bottles and paper.' },
+  { en: 'baby elephant',   pron: '[ˈbeɪbi ˌelɪfənt]',             de: 'Elefantenbaby',                      ex: 'This baby elephant is so cute.' },
+  { en: 'to leave',        pron: '[liːv]',                         de: 'zurücklassen · vergessen',           ex: 'He left his bag on the bus.' },
+  { en: 'at night',        pron: '[ət naɪt]',                      de: 'nachts',                             ex: 'I can\'t sleep well at night.' },
+  { en: 'plain',           pron: '[pleɪn]',                        de: 'Ebene',                              ex: '' },
+  { en: 'flat',            pron: '[flæt]',                         de: 'flach · eben',                       ex: '' },
+  { en: 'fence',           pron: '[fens]',                         de: 'Zaun',                               ex: '' },
+  { en: 'desert',          pron: '[ˈdezət]',                       de: 'Wüste',                              ex: '' },
+  { en: 'pond',            pron: '[pɒnd]',                         de: 'Teich · Tümpel',                     ex: '' },
+  { en: 'valley',          pron: '[ˈvæli]',                        de: 'Tal',                                ex: '' },
+  { en: 'ranger',          pron: '[ˈreɪndʒə]',                    de: 'Ranger · Rangerin',                  ex: 'Tony is a ranger in a national park.' },
+];
+
+// ── STATE ──
+let deck = [];
+let idx = 0;
+let phase = 'start'; // 'start' | 'flash' | 'freeze' | 'reveal' | 'done'
+let timerSec = 3;
+let doShuffle = false;
+let timerRAF = null;
+
+const CIRC = 251.3;
+
+// ── SETTINGS ──
+function setTimer(s) {
+  timerSec = s;
+  document.querySelectorAll('[data-sec]').forEach(el => {
+    el.classList.toggle('active', +el.dataset.sec === s);
+  });
+}
+function setShuffle(on) {
+  doShuffle = on;
+  document.getElementById('orderFixed').classList.toggle('active', !on);
+  document.getElementById('orderShuffle').classList.toggle('active', on);
+  document.getElementById('shuffleTag').classList.toggle('active', on);
+}
+function toggleShuffle() { setShuffle(!doShuffle); }
+
+// ── GAME FLOW ──
+function startGame() {
+  deck = [...VOCAB];
+  if (doShuffle) deck.sort(() => Math.random() - .5);
+  idx = 0;
+  showScreen('gameScreen');
+  showCard();
+}
+
+function showCard() {
+  const card = deck[idx];
+  updateProgress();
+
+  document.getElementById('flashWord').textContent = card.en;
+  document.getElementById('flashPron').textContent = card.pron;
+  document.getElementById('revealEn').textContent = card.en + '  ' + card.pron;
+  document.getElementById('revealDe').textContent = card.de;
+  document.getElementById('revealEx').textContent = card.ex;
+
+  setPhase('flash');
+  startTimer();
+}
+
+function goFreeze() {
+  cancelTimer();
+  setPhase('freeze');
+}
+function goReveal() {
+  setPhase('reveal');
+}
+function goNext() {
+  idx++;
+  if (idx >= deck.length) {
+    showScreen('doneScreen');
+    setPhase('done');
+  } else {
+    showCard();
+  }
+}
+function goBack() {
+  // re-show freeze from reveal (teacher wants to give more time)
+  setPhase('freeze');
+}
+
+// ── PHASE MANAGEMENT ──
+function setPhase(p) {
+  phase = p;
+  document.getElementById('phaseFlash').style.display  = p === 'flash'  ? 'flex' : 'none';
+  document.getElementById('phaseFreeze').style.display = p === 'freeze' ? 'flex' : 'none';
+  document.getElementById('phaseReveal').style.display = p === 'reveal' ? 'flex' : 'none';
+
+  // Body tint
+  document.body.className = p === 'start' || p === 'done' ? '' : 'state-' + p;
+
+  renderControls();
+}
+
+function renderControls() {
+  const c = document.getElementById('controls');
+  if (phase === 'start') {
+    c.innerHTML = '';
+  } else if (phase === 'flash') {
+    c.innerHTML = `
+      <button class="btn btn-ghost" onclick="goNext()">Überspringen<span class="shortcut">→</span></button>
+      <button class="btn btn-blue"  onclick="goFreeze()">❄️ Einfrieren<span class="shortcut">Leertaste</span></button>`;
+  } else if (phase === 'freeze') {
+    c.innerHTML = `
+      <button class="btn btn-ghost" onclick="goNext()">Überspringen<span class="shortcut">→</span></button>
+      <button class="btn btn-gold"  onclick="goReveal()">👁 Lösung zeigen<span class="shortcut">Leertaste</span></button>`;
+  } else if (phase === 'reveal') {
+    c.innerHTML = `
+      <button class="btn btn-ghost" onclick="goBack()">↩ Nochmal</button>
+      <button class="btn btn-green" onclick="goNext()">Weiter →<span class="shortcut">Leertaste</span></button>`;
+  } else if (phase === 'done') {
+    c.innerHTML = `
+      <button class="btn btn-ghost" onclick="showScreen('startScreen'); setPhase('start')">Einstellungen</button>
+      <button class="btn btn-gold"  onclick="startGame()">🔄 Neustart</button>`;
+  }
+}
+
+// ── TIMER ──
+function startTimer() {
+  cancelTimer();
+  const ring = document.getElementById('timerRing');
+  const num  = document.getElementById('timerNum');
+  ring.style.strokeDashoffset = '0';
+  num.textContent = timerSec;
+
+  const start = performance.now();
+  function tick(now) {
+    const elapsed = (now - start) / 1000;
+    const frac    = Math.min(elapsed / timerSec, 1);
+    ring.style.strokeDashoffset = CIRC * frac;
+    num.textContent = Math.max(0, Math.ceil(timerSec - elapsed));
+    if (frac < 1) {
+      timerRAF = requestAnimationFrame(tick);
+    } else {
+      goFreeze();
+    }
+  }
+  timerRAF = requestAnimationFrame(tick);
+}
+function cancelTimer() {
+  if (timerRAF) { cancelAnimationFrame(timerRAF); timerRAF = null; }
+}
+
+// ── PROGRESS ──
+function updateProgress() {
+  const pct = (idx / deck.length) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = idx + ' / ' + deck.length;
+}
+
+// ── SCREEN SWITCH ──
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ── KEYBOARD ──
+document.addEventListener('keydown', e => {
+  if (e.key === ' ' || e.key === 'Spacebar') {
+    e.preventDefault();
+    if      (phase === 'flash')  goFreeze();
+    else if (phase === 'freeze') goReveal();
+    else if (phase === 'reveal') goNext();
+  }
+  if (e.key === 'ArrowRight') { e.preventDefault(); goNext(); }
+  if (e.key === 'ArrowLeft' && phase === 'reveal') { e.preventDefault(); goBack(); }
+});
+
+// Init controls
+renderControls();
+</script>
+</body>
+</html>
